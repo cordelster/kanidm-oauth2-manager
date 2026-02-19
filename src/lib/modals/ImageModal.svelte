@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { kaniRequest } from '../../utils';
 	import { invalidate } from '$app/navigation';
+	import { base } from '$app/paths';
 	import Cropper from 'svelte-easy-crop';
 
 	interface ImageModalState {
@@ -352,7 +353,7 @@
 						<div class="border-base-300 h-32 w-32 overflow-hidden rounded-lg border">
 							{#if app?.attrs?.image?.length}
 								<img
-									src="/api/kani/image/{imageModal.appName}"
+									src="{base}/api/kani/image/{imageModal.appName}"
 									alt="Current application logo"
 									class="h-full w-full object-cover"
 								/>

@@ -1,3 +1,5 @@
+import { base } from '$app/paths';
+
 interface KaniRequest {
 	method?: 'POST' | 'GET' | 'PATCH' | 'DELETE' | 'PUT';
 	body?: any;
@@ -28,7 +30,7 @@ export async function kaniRequest<T>(f: typeof fetch, data: KaniRequest): Promis
 		headers['Content-Type'] = 'application/json';
 	}
 
-	const result = await f('/api/kani', {
+	const result = await f(`${base}/api/kani`, {
 		method: 'POST',
 		headers,
 		body: requestBody

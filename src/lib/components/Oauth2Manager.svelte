@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
+	import { base } from '$app/paths';
 	import { kaniRequest } from '../../utils';
 	import ScopeMapModal from '$lib/modals/ScopeMapModal.svelte';
 	import ClaimMapModal from '$lib/modals/ClaimMapModal.svelte';
@@ -154,7 +155,7 @@
 			addNotification('info', `Fetching favicon from ${baseUrl}...`);
 
 			// Use server-side API to fetch favicon (avoids CORS issues)
-			const response = await fetch('/api/fetch-icon', {
+			const response = await fetch(`${base}/api/fetch-icon`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -593,7 +594,7 @@
 									{#if app.attrs?.image?.length}
 										<div class="flex justify-center">
 											<img
-												src="/api/kani/image/{appName}"
+												src="{base}/api/kani/image/{appName}"
 												alt="Application logo"
 												class="border-base-300 h-16 w-16 rounded-lg border object-cover"
 											/>
