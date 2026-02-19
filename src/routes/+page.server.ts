@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private';
+import { base } from '$app/paths';
 import type { Load } from '@sveltejs/kit';
 import { kaniRequest, logo } from '../utils';
 
@@ -29,7 +30,7 @@ export const load: Load = async ({ fetch, url }) => {
 		app.attrs.oauth2_rs_origin?.forEach((origin) => {
 			if (origin.includes(url.hostname)) {
 				if (app.attrs?.image?.length) {
-					logo.url = `/api/kani/image/${app.attrs?.name[0]}`;
+					logo.url = `${base}/api/kani/image/${app.attrs?.name[0]}`;
 				}
 			}
 		})
