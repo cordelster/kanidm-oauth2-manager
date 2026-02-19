@@ -2,6 +2,24 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { getCachedToken } from '$lib/auth';
 
+// Allowlist of valid Kanidm API path prefixes.
+// Prevents the proxy from being used to reach arbitrary endpoints on the
+// Kanidm server (or anything else reachable from the container) via a
+// crafted data.path value.
+const ALLOWED_PATH_PREFIXES = [
+	'v1/oauth2',
+	'v1/group',
+	'v1/person',
+	'v1/account'
+];
+
+function isAllowedPath(path: string): boolean {
+	if (!path || typeof path !== 'string') return false;
+	// Reject anything with path traversal attempts
+	if (path.includes('..') || path.includes('//')) return false;
+	return ALLOWED_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
+}
+
 export const POST: RequestHandler = async ({ request }) => {
 	const token = await getCachedToken();
 
@@ -45,6 +63,11 @@ export const POST: RequestHandler = async ({ request }) => {
 			requestHeaders['content-type'] = 'application/json';
 		}
 	}
+	if (!isAllowedPath(data.path)) {
+		console.warn(`[kani] Blocked request to disallowed path: ${data.path}`);
+		return Response.json({ status: 403, body: 'Path not allowed' }, { status: 403 });
+	}
+
 	if (import.meta.env.DEV) {
 		console.log('fetching path:', `${env.KANIDM_BASE_URL}/${data.path}`);
 	}
